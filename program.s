@@ -9,8 +9,17 @@ sum:
     mov ebp, esp
 
     ; Body
-    mov eax, dword [ebp + 8]
-    add eax, dword [ebp + 12]
+    
+    mov eax, dword [ebp + 12]; eax=b
+    mul eax                  ; eax=b^2
+    mov ecx, eax             ; ecx=eax=b^2
+    mov eax, dword [ebp + 8] ; eax = a
+    mov edx, dword [ebp + 16]; edx=c
+    mul edx                  ; eax= eax*edx=a*c 
+    mov edx, 4
+    mul edx                  ; eax= eax*4=a*c*4 
+    sub ecx, eax             ; ecx= ecx-eax=b^2-4*a*c
+    mov eax, ecx
 
     ; Epilogue
     pop ebp
@@ -23,10 +32,11 @@ main:
     push esi
     push edi
 
-    push dword 2  ; y
-    push dword 1  ; x
+    push dword 1  ; c 
+    push dword 1  ; a
+    push dword 4  ; b
     call sum
-    add esp, 8
+    add esp, 12
 
     push eax  ; result of sum
     push format
